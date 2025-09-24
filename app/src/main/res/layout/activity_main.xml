@@ -1,61 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- Judul Aplikasi -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dompet Minimalis"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        />
-
-
-    <!-- Ringkasan Saldo -->
     <TextView
         android:id="@+id/tvSaldo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Saldo: Rp 1.000.000.000"
+        android:text="Saldo: Rp 0"
         android:textSize="18sp"
-        android:padding="8dp"
-        android:background="#E0E0E0"
-        android:gravity="center"/>
-
-    <!-- Tombol Aksi -->
-    <LinearLayout
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:paddingBottom="12dp"/>
 
-        <Button
-            android:id="@+id/btnTambah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tambah Data" />
+    <Button
+        android:id="@+id/btnTambah"
+        android:text="Tambah Transaksi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        <Button
-            android:id="@+id/btnLihat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lihat Data"
-            android:layout_marginStart="12dp"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/btnLihat"
+        android:text="Refresh Data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
 
-    <!-- List Transaksi -->
     <ListView
         android:id="@+id/listTransaksi"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="12dp"/>
+        android:dividerHeight="8dp"/>
 </LinearLayout>

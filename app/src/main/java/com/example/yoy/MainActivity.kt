@@ -2,18 +2,18 @@ package com.example.yoy
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    lateinit var db: DatabaseHelper
-    lateinit var listView: ListView
-    lateinit var tvSaldo: TextView
-    lateinit var btnTambah: Button
-    lateinit var btnLihat: Button
+
+    private lateinit var db: DatabaseHelper
+    private lateinit var listView: ListView
+    private lateinit var tvSaldo: TextView
+    private lateinit var btnTambah: Button
+    private lateinit var btnLihat: Button
+
+    private lateinit var transaksi: List<Map<String, String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +34,29 @@ class MainActivity : AppCompatActivity() {
         btnLihat.setOnClickListener {
             loadData()
         }
+
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val item = transaksi[position]
+            val intent = Intent(this, EditActivity::class.java)
+            intent.putExtra("id", item["id"]?.toInt() ?: -1)
+            intent.putExtra("nominal", item["nominal"]?.toInt() ?: 0)
+            intent.putExtra("keterangan", item["keterangan"])
+            intent.putExtra("jenis", item["jenis"])
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
     }
 
     private fun loadData() {
-        val transaksi = db.getSemuaTransaksi()
+        transaksi = db.getSemuaTransaksi()
         val dataList = transaksi.map {
             "${it["tanggal"]} - ${it["jenis"]} : Rp ${it["nominal"]}\n${it["keterangan"]}"
         }
         listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, dataList)
-
         tvSaldo.text = "Saldo: Rp ${db.getSaldo()}"
     }
 }

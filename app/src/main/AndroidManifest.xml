@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Yoy">
         <activity
-            android:name=".tambah"
+            android:name=".Tambah"
+            android:exported="false" />
+        <activity
+            android:name=".EditActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

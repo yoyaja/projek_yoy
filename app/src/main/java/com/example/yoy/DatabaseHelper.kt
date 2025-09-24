@@ -5,7 +5,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "yoy.db", null, 1) {
+class DatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, "keuangan.db", null, 1) {
 
     override fun onCreate(db: SQLiteDatabase) {
         val createTable = """
@@ -27,48 +28,75 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "yoy.db", nul
 
     fun tambahTransaksi(nominal: Int, keterangan: String, jenis: String): Boolean {
         val db = writableDatabase
-        val values = ContentValues()
-        values.put("nominal", nominal)
-        values.put("keterangan", keterangan)
-        values.put("jenis", jenis)
+        val values = ContentValues().apply {
+            put("nominal", nominal)
+            put("keterangan", keterangan)
+            put("jenis", jenis)
+        }
         val result = db.insert("transaksi", null, values)
+        db.close()
         return result != -1L
     }
 
-    fun getSemuaTransaksi(): MutableList<Map<String, String>> {
+    fun getSemuaTransaksi(): List<Map<String, String>> {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM transaksi ORDER BY id DESC", null)
         val list = mutableListOf<Map<String, String>>()
-
         if (cursor.moveToFirst()) {
             do {
-                val item = mapOf(
-                    "id" to cursor.getInt(0).toString(),
-                    "nominal" to cursor.getInt(1).toString(),
-                    "keterangan" to cursor.getString(2),
-                    "jenis" to cursor.getString(3),
-                    "tanggal" to cursor.getString(4)
+                val map = mapOf(
+                    "id" to cursor.getInt(cursor.getColumnIndexOrThrow("id")).toString(),
+                    "nominal" to cursor.getInt(cursor.getColumnIndexOrThrow("nominal")).toString(),
+                    "keterangan" to cursor.getString(cursor.getColumnIndexOrThrow("keterangan")),
+                    "jenis" to cursor.getString(cursor.getColumnIndexOrThrow("jenis")),
+                    "tanggal" to cursor.getString(cursor.getColumnIndexOrThrow("tanggal"))
                 )
-                list.add(item)
+                list.add(map)
             } while (cursor.moveToNext())
         }
         cursor.close()
+        db.close()
         return list
     }
 
     fun getSaldo(): Int {
         val db = readableDatabase
-        var saldo = 0
+        val pemasukan = db.rawQuery(
+            "SELECT SUM(nominal) FROM transaksi WHERE jenis='Pemasukan'", null
+        )
+        val pengeluaran = db.rawQuery(
+            "SELECT SUM(nominal) FROM transaksi WHERE jenis='Pengeluaran'", null
+        )
 
-        val cursor = db.rawQuery("SELECT nominal, jenis FROM transaksi", null)
-        if (cursor.moveToFirst()) {
-            do {
-                val nominal = cursor.getInt(0)
-                val jenis = cursor.getString(1)
-                saldo += if (jenis == "Pemasukan") nominal else -nominal
-            } while (cursor.moveToNext())
+        var totalPemasukan = 0
+        var totalPengeluaran = 0
+
+        if (pemasukan.moveToFirst()) totalPemasukan = pemasukan.getInt(0)
+        if (pengeluaran.moveToFirst()) totalPengeluaran = pengeluaran.getInt(0)
+
+        pemasukan.close()
+        pengeluaran.close()
+        db.close()
+
+        return totalPemasukan - totalPengeluaran
+    }
+
+    fun updateTransaksi(id: Int, nominal: Int, keterangan: String, jenis: String): Boolean {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("nominal", nominal)
+            put("keterangan", keterangan)
+            put("jenis", jenis)
         }
-        cursor.close()
-        return saldo
+        val result = db.update("transaksi", values, "id=?", arrayOf(id.toString()))
+        db.close()
+        return result > 0
+    }
+
+    fun deleteTransaksi(id: Int): Boolean {
+        val db = writableDatabase
+        val result = db.delete("transaksi", "id=?", arrayOf(id.toString()))
+        db.close()
+        return result > 0
     }
 }

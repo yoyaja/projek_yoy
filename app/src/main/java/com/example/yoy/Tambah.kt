@@ -1,54 +1,41 @@
 package com.example.yoy
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
-     class Tambah : AppCompatActivity() {
-       lateinit var db: DatabaseHelper
-        lateinit var etNominal: EditText
-        lateinit var etKeterangan: EditText
-        lateinit var rbPemasukan: RadioButton
-        lateinit var rbPengeluaran: RadioButton
-        lateinit var btnSimpan: Button
+class Tambah : AppCompatActivity() {
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_tambah)
+    private lateinit var db: DatabaseHelper
 
-            db = DatabaseHelper(this)
-            etNominal = findViewById(R.id.etNominal)
-            etKeterangan = findViewById(R.id.etKeterangan)
-            rbPemasukan = findViewById(R.id.rbPemasukan)
-            rbPengeluaran = findViewById(R.id.rbPengeluaran)
-            btnSimpan = findViewById(R.id.btnSimpan)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tambah)
 
-            btnSimpan.setOnClickListener {
-                val nominalStr = etNominal.text.toString().trim()
-                val keterangan = etKeterangan.text.toString().trim()
-                val jenis = if (rbPemasukan.isChecked) "Pemasukan" else "Pengeluaran"
+        db = DatabaseHelper(this)
 
-                if (nominalStr.isEmpty() || keterangan.isEmpty()) {
-                    Toast.makeText(this, "Isi semua data dengan benar", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
+        val etNominal = findViewById<EditText>(R.id.etNominal)
+        val etKeterangan = findViewById<EditText>(R.id.etKeterangan)
+        val rbPemasukan = findViewById<RadioButton>(R.id.rbPemasukan)
+        val rbPengeluaran = findViewById<RadioButton>(R.id.rbPengeluaran)
+        val btnSimpan = findViewById<Button>(R.id.btnSimpan)
 
-                val nominal = nominalStr.toIntOrNull()
-                if (nominal == null) {
-                    Toast.makeText(this, "Nominal harus angka", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
+        btnSimpan.setOnClickListener {
+            val nominal = etNominal.text.toString().toIntOrNull()
+            val keterangan = etKeterangan.text.toString()
+            val jenis = if (rbPemasukan.isChecked) "Pemasukan" else "Pengeluaran"
 
+            if (nominal != null && keterangan.isNotEmpty()) {
                 val sukses = db.tambahTransaksi(nominal, keterangan, jenis)
                 if (sukses) {
-                    Toast.makeText(this, "Data berhasil disimpan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Transaksi berhasil disimpan", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Toast.makeText(this, "Gagal menyimpan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal menyimpan transaksi", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(this, "Isi semua data dengan benar", Toast.LENGTH_SHORT).show()
             }
         }
     }
+}
