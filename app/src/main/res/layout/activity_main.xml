@@ -1,35 +1,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/oooo">
 
+    <!-- Saldo -->
     <TextView
         android:id="@+id/tvSaldo"
         android:text="Saldo: Rp 0"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp"/>
+        android:padding="16dp" />
 
-    <Button
+    <!-- Tombol Tambah -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTambah"
         android:text="Tambah Transaksi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnLihat"
-        android:text="Refresh Data"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="24dp"
+        app:cornerRadius="12dp"
+        app:icon="@android:drawable/ic_input_add"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="#039BE5" />
 
+    <!-- Tombol Refresh -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLihat"
+        android:text="Refresh Data"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:cornerRadius="12dp"
+        app:icon="@android:drawable/ic_popup_sync"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="@android:color/holo_red_light" />
+
+    <!-- List Transaksi -->
     <ListView
         android:id="@+id/listTransaksi"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:dividerHeight="8dp"/>
+        android:dividerHeight="10dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
 </LinearLayout>
